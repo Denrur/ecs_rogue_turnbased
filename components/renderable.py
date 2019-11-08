@@ -1,8 +1,10 @@
 class Renderable:
-    def __init__(self, char: str = '@', color='white', pos_x: int = 0, pos_y: int = 0, layer=None):
-        self.x = pos_x
-        self.y = pos_y
-        self.char = char
+    def __init__(self, glyph: str = '@', color='white',
+                 layer=None, renderable: bool = True):
+        self.rend_x = 0
+        self.rend_y = 0
+        self.glyph = glyph
         self.layer = layer
         self.color = color
+        self.renderable = renderable
 

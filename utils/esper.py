@@ -1,5 +1,6 @@
 import time as _time
 
+from collections import defaultdict
 from functools import lru_cache as _lru_cache
 from typing import List, Type, TypeVar, Any, Tuple, Iterable
 
@@ -25,6 +26,10 @@ class Processor:
     def process(self, *args, **kwargs):
         raise NotImplementedError
 
+    @property
+    def current_entity(self):
+        return self.world.current_entity
+
 
 class Entity:
     def __init__(self, uid: int, name: str = None):
@@ -46,6 +51,9 @@ class World:
         self._entities = {}
         self._dead_entities = set()
         self.timer = 0
+        self.current_entity = None
+        self.entities_position = defaultdict(lambda:[[], True])
+
         if timed:
             self.process_times = {}
             self._process = self._timed_process
@@ -116,9 +124,30 @@ class World:
         entity = Entity(self._next_entity_id, name=name)
         # TODO: duplicate add_component code here for performance
         for component in components:
-            self.add_component(entity, component)
+            """Add a new Component instance to an Entity.
 
-        # self.clear_cache()
+                    Add a Component instance to an Entiy. If a Component of the same type
+                    is already assigned to the Entity, it will be replaced.
+
+                    :param entity: The Entity to associate the Component with.
+                    :param component_instance: A Component instance.
+                    """
+            component_type = type(component)
+
+            if component_type not in self._components:
+                self._components[component_type] = set()
+
+            self._components[component_type].add(entity)
+
+            if entity not in self._entities:
+                self._entities[entity] = {}
+
+            self._entities[entity][component_type] = component
+            # if not component_instance.owner:
+            #     component_instance.owner = entity
+            # self.clear_cache()
+
+        self.clear_cache()
         return entity
 
     def delete_entity(self, entity: object, immediate=False) -> None:

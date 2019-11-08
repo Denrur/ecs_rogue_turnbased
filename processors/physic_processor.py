@@ -1,7 +1,4 @@
-from components.action import Action
 from components.physics import Physics
-
-from processors.action_processor import ActionProcessor
 
 from utils.esper import Processor
 
@@ -12,20 +9,22 @@ class PhysicProcessor(Processor):
 
     def process(self, *args, **kwargs):
         print(f'Physic processor'.center(100, '#'))
-        ent = self.world.get_processor(ActionProcessor).current_entity
-        action = self.world.component_for_entity(ent, Action)
+        ent = self.current_entity
 
         phys = self.world.component_for_entity(ent, Physics)
 
-        print(f'''{ent.name=}, {action.type=}, {action.cost=}, {phys.x=}, {phys.y=},
-        {phys.dest_x=}, {phys.dest_y=}''')
-        if action.type == 'move':
-            move(phys)
+        if phys.move:
+            destination = (phys.pos_x + phys.dest_x, phys.pos_y + phys.dest_y)
+            if self.world.entities_position[destination][1]:
+                self.change_position(phys, ent)
 
-
-def move(phys):
-    phys.x += phys.dest_x
-    phys.y += phys.dest_y
-    phys.dest_x = 0
-    phys.dest_y = 0
-    phys.move = False
+    def change_position(self, phys, ent):
+        self.world.entities_position[(phys.pos_x, phys.pos_y)][0].remove(ent)
+        self.world.entities_position[(phys.pos_x, phys.pos_y)][1] = True
+        if not self.world.entities_position[(phys.pos_x, phys.pos_y)][0]:
+            del self.world.entities_position[(phys.pos_x, phys.pos_y)]
+        phys.pos_x += phys.dest_x
+        phys.pos_y += phys.dest_y
+        self.world.entities_position[(phys.pos_x, phys.pos_y)][0].append(ent)
+        self.world.entities_position[(phys.pos_x, phys.pos_y)][1] = False
+        phys.move = False
