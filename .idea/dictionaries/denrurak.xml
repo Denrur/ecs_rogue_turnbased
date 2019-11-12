@@ -2,6 +2,9 @@
   <dictionary name="denrurak">
     <words>
       <w>collidable</w>
+      <w>collider</w>
+      <w>damager</w>
+      <w>npcs</w>
       <w>renderable</w>
     </words>
   </dictionary>

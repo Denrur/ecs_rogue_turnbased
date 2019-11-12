@@ -1,7 +1,6 @@
 from bearlibterminal import terminal as blt
 
 from components.renderable import Renderable
-from components.physics import Physics
 
 from utils.esper import Processor
 
@@ -17,9 +16,10 @@ class RenderProcessor(Processor):
         blt.clear()
 
         for ent, rend in self.world.get_component(Renderable):
-            render_entity(rend)
+            if rend.renderable:
+                render_entity(rend)
 
-            print(f'{ent.name=} {rend.rend_x=} {rend.rend_y=}')
+                print(f'{ent.name=} {rend.rend_x=} {rend.rend_y=}')
 
         blt.refresh()
 

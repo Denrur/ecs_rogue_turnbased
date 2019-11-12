@@ -2,6 +2,9 @@ from components.action import Action
 from components.control import Control
 from components.camera import Camera
 from components.char_attr import CharAttr
+from components.damager import Damager
+from components.inventory import Inventory
+from components.item import Item
 from components.physics import Physics
 from components.renderable import Renderable
 
@@ -29,14 +32,12 @@ def spawn_npc(world, kind, pos_x, pos_y):
     return ent
 
 
-def add_camera(world):
-    camera = world.create_entity(name='Camera')
-    world.add_component(camera, Camera())
-
-
 creatures = {'Player': {'Name': 'Player',
-                        'components': [Action, Control, Renderable, Physics, CharAttr],
+                        'components': [Action, Control, Renderable, Physics, Damager, CharAttr, Inventory],
                         'layer': Layers.ENTITIES,
+                        'health': 100,
+                        'power': 25,
+                        'capacity': 26,
                         'color': 'white', 'glyph': '@',
                         'str': 5,
                         'int': 10,
@@ -46,13 +47,23 @@ creatures = {'Player': {'Name': 'Player',
              'Goblin': {'Name': 'Goblin',
                         'components': [Action, Renderable, Physics, CharAttr],
                         'layer': Layers.ENTITIES,
+                        'health': 30,
                         'color': 'green', 'glyph': 'G',
                         'collidable': True},
              'Worm': {'Name': 'Worm',
                       'components': [Action, Renderable, Physics, CharAttr],
                       'layer': Layers.ENTITIES,
+                      'health': 30,
                       'color': 'pink', 'glyph': 's',
-                      'collidable': True}
+                      'collidable': True},
+             'Dagger': {'Name': 'Dagger',
+                        'components': [Renderable, Physics, Item, Damager],
+                        'layer': Layers.ITEMS,
+                        'color': 'blue', 'glyph': '-',
+                        'coast': 3, 'weight': 5,
+                        'collidable': False},
+             'Camera': {'Name': 'Camera',
+                        'components': [Camera]}
              }
 
 

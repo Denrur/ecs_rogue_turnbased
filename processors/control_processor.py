@@ -23,6 +23,7 @@ class ControlProcessor(Processor):
             action = self.world.component_for_entity(ent, Action)
             act = handle_keys(ctrl)
             print(act)
+            #todo : добавить возможность нескольких команд с клавиатуры
             if act:
                 for action_type, action_param in act.items():
                     action.type, action.param = action_type, action_param
