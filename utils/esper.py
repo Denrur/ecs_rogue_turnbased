@@ -5,6 +5,7 @@ from functools import lru_cache as _lru_cache
 from typing import List, Type, TypeVar, Any, Tuple, Iterable
 
 from utils.decorators import benchmark
+from utils.bool_operation import Blocked
 
 
 C = TypeVar('C')
@@ -52,7 +53,7 @@ class World:
         self._dead_entities = set()
         self.timer = 0
         self.current_entity = None
-        self.entities_position = defaultdict(lambda:[[], True])
+        self.entities_position = defaultdict(lambda:[[], Blocked(False)])
 
         if timed:
             self.process_times = {}

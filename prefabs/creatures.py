@@ -8,6 +8,7 @@ from components.item import Item
 from components.physics import Physics
 from components.renderable import Renderable
 
+from utils.bool_operation import Blocked
 from utils.layers import Layers
 
 
@@ -25,8 +26,7 @@ def spawn_npc(world, kind, pos_x, pos_y):
         if type(c) is Physics:
             c.pos_x, c.pos_y = pos_x, pos_y
             world.entities_position[(c.pos_x, c.pos_y)][0].append(ent)
-            if c.collidable:
-                world.entities_position[(c.pos_x, c.pos_y)][1] = False
+            world.entities_position[(c.pos_x, c.pos_y)][1] += c.collidable
         world.add_component(ent, c)
 
     return ent
@@ -42,26 +42,26 @@ creatures = {'Player': {'Name': 'Player',
                         'str': 5,
                         'int': 10,
                         'dex': 5,
-                        'collidable': True
+                        'collidable': Blocked(True)
                         },
              'Goblin': {'Name': 'Goblin',
                         'components': [Action, Renderable, Physics, CharAttr],
                         'layer': Layers.ENTITIES,
                         'health': 30,
                         'color': 'green', 'glyph': 'G',
-                        'collidable': True},
+                        'collidable': Blocked(True)},
              'Worm': {'Name': 'Worm',
                       'components': [Action, Renderable, Physics, CharAttr],
                       'layer': Layers.ENTITIES,
                       'health': 30,
                       'color': 'pink', 'glyph': 's',
-                      'collidable': True},
+                      'collidable': Blocked(True)},
              'Dagger': {'Name': 'Dagger',
                         'components': [Renderable, Physics, Item, Damager],
                         'layer': Layers.ITEMS,
                         'color': 'blue', 'glyph': '-',
                         'coast': 3, 'weight': 5,
-                        'collidable': False},
+                        'collidable': Blocked(False)},
              'Camera': {'Name': 'Camera',
                         'components': [Camera]}
              }

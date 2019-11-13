@@ -17,7 +17,7 @@ class PhysicProcessor(Processor):
         if phys.move:
             destination = (phys.pos_x + phys.dest_x, phys.pos_y + phys.dest_y)
             target_list = self.world.entities_position[destination]
-            if target_list[1]:
+            if not target_list[1].value:
                 self.change_position(phys, ent)
 
         if dmg.attack:
@@ -34,16 +34,16 @@ class PhysicProcessor(Processor):
 
     def change_position(self, phys, ent):
         self.world.entities_position[(phys.pos_x, phys.pos_y)][0].remove(ent)
-        self.world.entities_position[(phys.pos_x, phys.pos_y)][1] = True
+        self.world.entities_position[(phys.pos_x, phys.pos_y)][1] -= phys.collidable
         if not self.world.entities_position[(phys.pos_x, phys.pos_y)][0]:
             del self.world.entities_position[(phys.pos_x, phys.pos_y)]
         phys.pos_x += phys.dest_x
         phys.pos_y += phys.dest_y
         self.world.entities_position[(phys.pos_x, phys.pos_y)][0].append(ent)
-        self.world.entities_position[(phys.pos_x, phys.pos_y)][1] = not phys.collidable
+        self.world.entities_position[(phys.pos_x, phys.pos_y)][1] += phys.collidable
         phys.move = False
 
     def kill_entity(self, ent, list_of_entities):
         list_of_entities[0].remove(ent)
-        list_of_entities[1] = True
+        list_of_entities[1] = False
         self.world.delete_entity(ent, immediate=True)
